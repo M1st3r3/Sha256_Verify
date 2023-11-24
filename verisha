@@ -1,0 +1,86 @@
+#!/bin/bash
+
+
+display_help() {
+  echo "Usage: $0 -s [SHA256] -f [File]"
+  echo "  -s: Specify the sum of the Sha256"
+  echo "  -f: Specify the File to check"
+  echo "  -h: Display this help message"
+  exit 1
+}
+
+# Check the number of arguments
+if [ "$#" -eq 0 ]; then
+  display_help
+fi
+
+
+while getopts ":s:f:h" opt; do
+  case $opt in
+    s)
+      sha="$OPTARG"
+      ;;
+    f)
+      file="$OPTARG"
+      ;;
+    h)
+      display_help
+      ;;
+
+  esac
+done
+
+if [ -z "$sha" ] || [ -z "$file" ]; then
+  echo "Error: Both -s and -f options are required."
+  display_help
+fi
+
+final_sha=$(sha256sum $file | cut -d ' ' -f1)
+
+
+
+
+if test "$sha" = "$final_sha"
+then
+    rep="
+          _nnnn_                      
+        dGGGGMMb     ,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\".
+       @p~qp~~qMb    | SHA256 IS EQUAL!  |
+       M|@||@) M|   _;..................'
+       @,----.JM| -'
+      JS^\\__/  qKL
+     dZP        qKRb
+    dZP          qKKb
+   fZP            SMMb
+   HZM     SHA    MMMM
+   FqM            MMMM
+ __| \".        |\\dS\"qML
+ |    \`.       | \`' \\Zq
+_)      \\.___.,|     .'
+\\____   )MMMMMM|   .'
+     \`-'       \`--' hjm
+"
+    echo "$rep"
+else
+    rep="
+          _nnnn_
+        dGGGGMMb     ,\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\".
+       @p~qp~~qMb    | SHA256 IS Not EQUAL!  |
+       M|@||@) M|   _;......................'
+       @,----.JM| -'
+      JS^\\__/  qKL
+     dZP        qKRb
+    dZP          qKKb
+   fZP            SMMb
+   HZM    !SHA    MMMM
+   FqM            MMMM
+ __| \".        |\\dS\"qML
+ |    \`.       | \`' \\Zq
+_)      \\.___.,|     .'
+\\____   )MMMMMM|   .'
+     \`-'       \`--' hjm
+"
+    echo "$rep"
+fi
+
+
